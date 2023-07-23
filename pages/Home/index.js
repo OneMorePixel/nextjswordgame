@@ -1,7 +1,6 @@
 import Head from 'next/head';
-import styles from '../styles/Home.module.css';
 import React, { useState, useRef, useEffect } from 'react';
-import 'bootstrap/dist/css/bootstrap.css';
+import styles from "./Home.module.css";
 
 export default function Home() {
 
@@ -25,6 +24,7 @@ export default function Home() {
       let newLetter = letterList[generateRandomInteger(1, letterList.length)];
       setLetter(newLetter);
       setWord(newLetter);
+      setMessage('');
     }
   }, [timer]);
 
@@ -58,15 +58,17 @@ export default function Home() {
     let scorePoint = 0;
     if(correctWordList.filter(f => f == word).length > 0 || wrondWordList.filter(f => f == word).length > 0){
       setMessage('Already typed...');
+      return;
+    } 
+    
+    if(CheckWord(word) == true){
+      setCorrectWordList(correctWordList => [...correctWordList, word]);
+        scorePoint = word.length * 10;
     } else {
-      if(CheckWord(word) == true){
-        setCorrectWordList(correctWordList => [...correctWordList, word]);
-          scorePoint = word.length * 10;
-      } else {
-        setWrongWordList(wrondWordList => [...wrondWordList, word]);
-        scorePoint = word.length * -10;
-      }
+      setWrongWordList(wrondWordList => [...wrondWordList, word]);
+      scorePoint = word.length * -10;
     }
+    setMessage('');
     setScore(score + scorePoint);
     setWord(letter);
   }
@@ -98,9 +100,13 @@ export default function Home() {
                 <h5>Enter words starting with the letter '{letter}'</h5>
               </div>
               <div className='card-body'>
-                {timer == 0 && <button className='btn btn-lg btn-success' onClick={() => Start()}>Start</button>}
-                <h2 className='text-center'>{timerToString()}</h2>
-                <div><h4 className='text-center'>Score : {score}</h4></div>
+                {timer == 0 && <button className={`btn btn-lg btn-success col-lg-12 ${styles.startButton}`} onClick={() => Start()}>Start</button>}
+                <div className={styles.countDownWrapper}>
+                  <h1 className='text-center'>{timerToString()}</h1>
+                </div>
+                <div className={styles.scoreWrapper}>
+                  <h4 className='text-center'>Score : {score}</h4>
+                </div>
                 <div><h6 className='text-center'>{message}</h6></div>
                 <div className={`row ${styles.inputRow}`}>
                   <div className={`col col-lg-11`}>
@@ -122,7 +128,7 @@ export default function Home() {
                   </div>
                   <div className='card-body'>
                     <ul>
-                      {correctWordList.map((item, key)=> { return <li key={key}>{item}</li> })}
+                      {correctWordList.sort().reverse().map((item, key)=> { return <li key={key}>{item}</li> })}
                     </ul>
                   </div>
                 </div>
@@ -135,7 +141,7 @@ export default function Home() {
                   </div>
                   <div className='card-body'>
                     <ul>
-                      {wrondWordList.map((item, key)=> { return <li key={key}>{item}</li> })}
+                      {wrondWordList.sort().reverse().map((item, key)=> { return <li key={key}>{item}</li> })}
                     </ul>
                   </div>
                 </div>
