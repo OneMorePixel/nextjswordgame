@@ -7,10 +7,11 @@ export default function Home() {
 
   const Ref = useRef(null);
   const [timer, setTimer] = useState(120); //in seconds
-  const [harf, setHarf] = useState('a');
-  const [kelime, setKelime] = useState('');
-  const [bulunanKelimeListesi, setBulunanKelimeListesi] = useState([]);
-  const [hataliKelimeListesi, setHataliKelimeListesi] = useState([]);
+  const [score, setScore] = useState(0);
+  const [letter, setLetter] = useState('a');
+  const [word, setWord] = useState('');
+  const [correctWordList, setCorrectWordList] = useState([]);
+  const [wrondWordList, setWrongWordList] = useState([]);
 
   const timerToString = () => {
     let hours = ('0' + Math.floor(timer/3600)).slice(-2);
@@ -29,27 +30,38 @@ export default function Home() {
 
 
   function handleOnChange(e){
-     setKelime(e.target.value);
+     setWord(e.target.value);
   }
 
   function handleKeyPress(e){
       if (e.key === 'Enter') {
-          console.log({bulunanKelimeListesi});
-          setBulunanKelimeListesi(bulunanKelimeListesi => [...bulunanKelimeListesi, kelime]);
-          setKelime(harf);
+        let scorePoint = 0;
+        if(CheckWord(word) == true){
+          setCorrectWordList(correctWordList => [...correctWordList, word]);
+          scorePoint = word.length * 10;
+        } else {
+          setWrongWordList(wrondWordList => [...wrondWordList, word]);
+          scorePoint = word.length * -10;
+        }
+        setScore(score + scorePoint);
+        setWord(letter);
       }
   }
 
-  function Yenile(){
-    setBulunanKelimeListesi([]);
-    setHataliKelimeListesi([]);
+  function Refresh(){
+    setCorrectWordList([]);
+    setWrongWordList([]);
     setTimer(120);
+  }
+
+  function CheckWord(word){
+    return true;
   }
 
   return (
     <div className={styles.container} styles={timer == 0 ? "background-color: gray;" : "background-color: white;"}>
       <Head>
-        <title>Create Next App</title>
+        <title>Word Game</title>
         <link rel="icon" href="/favicon.ico" />
         <link rel="stylesheet" href="/styles/globals.css" />
       </Head>
@@ -60,13 +72,13 @@ export default function Home() {
 
             <div className='card'>
               <div className='card-header'>
-                <h5>Enter words starting with the letter '{harf}'</h5>
+                <h5>Enter words starting with the letter '{letter}'</h5>
               </div>
               <div className='card-body'>
                 <h2 className='text-center'>{timerToString()}</h2>
-                {timer == 0 && <button className='btn btn-primary' onClick={() => Yenile()}>Yenile</button>}
-                <input type={"text"} className={`form-control ${styles.formControl}`} value={kelime} disabled={timer == 0 ? "disabled" : ""} onChange={handleOnChange} onKeyUp={handleKeyPress} />
-               
+                <h4 className='text-center'>Score : {score}</h4>
+                {timer == 0 && <button className='btn btn-primary' onClick={() => Refresh()}>Refresh</button>}
+                <input type={"text"} maxLength={100} className={`form-control ${styles.formControl}`} placeholder={"Type a word and press enter"} value={word} disabled={timer == 0 ? "disabled" : ""} onChange={handleOnChange} onKeyUp={handleKeyPress} />
               </div>
             </div>
 
@@ -75,11 +87,11 @@ export default function Home() {
               <div className='col col-md-6'>
                 <div className={`card ${styles.wordList}`}>
                   <div className='card-header'>
-                    Correct Words - {bulunanKelimeListesi.length}
+                    Correct Words - {correctWordList.length}
                   </div>
                   <div className='card-body'>
                     <ul>
-                      {bulunanKelimeListesi.map((item, key)=> { return <li key={key}>{item}</li> })}
+                      {correctWordList.map((item, key)=> { return <li key={key}>{item}</li> })}
                     </ul>
                   </div>
                 </div>
@@ -88,11 +100,11 @@ export default function Home() {
               <div className='col col-md-6'>
                 <div className={`card ${styles.wordList}`}>
                   <div className='card-header'>
-                    Wrong Words - {hataliKelimeListesi.length}
+                    Wrong Words - {wrondWordList.length}
                   </div>
                   <div className='card-body'>
                     <ul>
-                      {hataliKelimeListesi.map((item, key)=> { return <li key={key}>{item}</li> })}
+                      {wrondWordList.map((item, key)=> { return <li key={key}>{item}</li> })}
                     </ul>
                   </div>
                 </div>
@@ -103,17 +115,6 @@ export default function Home() {
         </div>
       </div>
 
-    </div>
-  )
-
-  return (
-    <div className={styles.container}>
-      <Head>
-        <title>Create Next App</title>
-        <link rel="icon" href="/favicon.ico" />
-      </Head>
-
-      
     </div>
   )
 }
