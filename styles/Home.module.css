@@ -97,5 +97,12 @@
   overflow-y: scroll;
 }
 :global(.form-control).formControl {
+  font-size: 1.5rem;
+}
+.inputRow{
   margin: 1rem 0;
+}
+.inputRow :global(.col){
+  padding-right: 0;
+  padding-left: 0;
 }
