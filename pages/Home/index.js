@@ -3,15 +3,16 @@ import React, { useState, useRef, useEffect } from 'react';
 import styles from "./Home.module.css";
 
 export default function Home() {
-
+  
+  const Ref = useRef(null);
   const gameDuration = 120; //in seconds
   const letterList = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z'];
-  const Ref = useRef(null);
   const [timer, setTimer] = useState(0);
   const [score, setScore] = useState(0);
   const [letter, setLetter] = useState('');
   const [word, setWord] = useState('');
   const [message, setMessage] = useState('');
+  const [allowedWordList, setaAllowedWordList] = useState([]);
   const [correctWordList, setCorrectWordList] = useState([]);
   const [wrondWordList, setWrongWordList] = useState([]);
 
@@ -25,6 +26,7 @@ export default function Home() {
       setLetter(newLetter);
       setWord(newLetter);
       setMessage('');
+      FetchAllowedWords(newLetter);
     }
   }, [timer]);
 
@@ -77,10 +79,32 @@ export default function Home() {
     setCorrectWordList([]);
     setWrongWordList([]);
     setTimer(gameDuration);
+  }  
+  
+  async function FetchAllowedWords(letter){
+    fetch('/words/' + letter + '.json'
+    ,{
+      headers : { 
+        'Content-Type': 'application/json',
+        'Accept': 'application/json'
+       }
+    }
+    )
+      .then(function(response){
+        return response.json();
+      })
+      .then(function(myJson) {
+        console.log(myJson);
+        setaAllowedWordList(myJson);
+      });
   }
 
   function CheckWord(word){
-    return true;
+    if(allowedWordList.indexOf(word) > -1){
+      return true;
+    } else {
+      return false;
+    }
   }
 
   return (
@@ -88,7 +112,6 @@ export default function Home() {
       <Head>
         <title>Word Game</title>
         <link rel="icon" href="/favicon.ico" />
-        <link rel="stylesheet" href="/styles/globals.css" />
       </Head>
       
       <div className='container'>
