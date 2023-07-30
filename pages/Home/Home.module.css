@@ -1,6 +1,6 @@
 .container {
   min-height: 90vh;
-  padding: 3rem 0.5rem;
+  padding: 2rem 0.5rem 0;
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -93,7 +93,7 @@
   margin: 1rem 0;
 }
 .wordList > :global(.card-body){
-  height: 40vh;
+  height: 34vh;
   overflow-y: scroll;
 }
 :global(.form-control).formControl {
@@ -121,4 +121,7 @@
   padding: 0.3rem;
   border-radius: 0.5rem;
   margin: 0.5rem 0;
+}
+.point {
+  line-height: 1rem;
 }

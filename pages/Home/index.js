@@ -123,7 +123,7 @@ export default function Home() {
                 <h5>Enter words starting with the letter '{letter}'</h5>
               </div>
               <div className='card-body'>
-                {timer == 0 && <button className={`btn btn-lg btn-success col-lg-12 ${styles.startButton}`} onClick={() => Start()}>Start</button>}
+                <button className={`btn btn-lg btn-success col-lg-12 ${styles.startButton}`} disabled={timer > 0 ? "disabled" : ""} onClick={() => Start()}>Start</button>
                 <div className={styles.countDownWrapper}>
                   <h1 className='text-center'>{timerToString()}</h1>
                 </div>
@@ -146,12 +146,15 @@ export default function Home() {
 
               <div className='col col-md-6'>
                 <div className={`card ${styles.wordList}`}>
-                  <div className='card-header'>
+                  <div className='card-header bg-success text-light'>
                     Correct Words ({correctWordList.length})
                   </div>
                   <div className='card-body'>
                     <ul>
-                      {correctWordList.sort().reverse().map((item, key)=> { return <li key={key}>{item}</li> })}
+                      {correctWordList.sort().reverse().map((item, key)=> { return <li key={key} className="text-success">
+                        <span>{key + 1} - {item}</span> 
+                        <span className={`${styles.point} badge bg-success text-light`}>{item.length * 10}</span>
+                        </li>})}
                     </ul>
                   </div>
                 </div>
@@ -159,12 +162,15 @@ export default function Home() {
 
               <div className='col col-md-6'>
                 <div className={`card ${styles.wordList}`}>
-                  <div className='card-header'>
+                  <div className='card-header bg-danger text-light'>
                     Wrong Words ({wrondWordList.length})
                   </div>
                   <div className='card-body'>
                     <ul>
-                      {wrondWordList.sort().reverse().map((item, key)=> { return <li key={key}>{item}</li> })}
+                      {wrondWordList.sort().reverse().map((item, key)=> { return <li key={key} className="text-danger">
+                        <span>{key + 1} - {item}</span>
+                        <span className={`${styles.point} badge bg-danger text-light`}>-{item.length * 10}</span>
+                        </li>})}
                     </ul>
                   </div>
                 </div>
